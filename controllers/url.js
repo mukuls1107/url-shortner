@@ -7,22 +7,30 @@ async function handleAllUrlData(req, res) {
     return res.status(200).json(data);
 }
 
+async function handleAnalytics(req, res) {
+    const id = req.params.id;
+
+    
+    const data = await url.findOne({shortId: id});
+    if (!data) return res.status(404).json({msg: "Id not found."})
+
+    return res.status(200).json({numOfClicks: data.visitHistory.length, id: data.shortid, url: data.redirectURL});
+
+}
+
 async function handleRedirectShortIdToUrl(req, res) {
     const id = req.params.id;
-    const getData = await url.findOne({shortId: id});
+    const getData = await url.findOneAndUpdate({shortId: id},  // Ensure consistent field name
+        {
+            $push: {
+                visitHistory: {
+                    timestamp: new Date()  // Store current date/time as a Date object
+                }
+            }
+        });
     if (!getData) return res.status(404).json({msg: "Id not found"});
     res.redirect(getData.redirectURL);
-    await url.findOneAndUpdate({shortid: id}, {
-        $push: {
-            visitHistory: {
-                timestamp: Date.now()
-            }
-            
-        }
-    })
 
-
-    return res.status(200).json({id: getData.id, originalUrl: getData.redirectURL});
 
 }
 
@@ -34,9 +42,7 @@ async function handleGenerateNewUrl(req, res) {
 
     const shortId = shortid.generate();
     await URL.create({
-        shortId: shortId,
-        redirectURL: body.url,
-        visitHistory: []
+        shortId: shortId, redirectURL: body.url, visitHistory: []
 
     })
 
@@ -44,9 +50,6 @@ async function handleGenerateNewUrl(req, res) {
 }
 
 
-
 module.exports = {
-    handleGenerateNewUrl,
-    handleRedirectShortIdToUrl,
-    handleAllUrlData
+    handleGenerateNewUrl, handleRedirectShortIdToUrl, handleAllUrlData, handleAnalytics
 }

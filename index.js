@@ -10,7 +10,7 @@ app.use(express.urlencoded({ extended: false }))
 // Routes
 const urlRoute = require("./routes/url")
 
-app.use("/url", urlRoute)
+app.use("/url/", urlRoute)
 
 
 // Connection
