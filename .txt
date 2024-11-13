@@ -1,0 +1,19 @@
+<!-- <table align="center" border="1">
+      <tr>
+        <th>Short Id</th>
+        <th>Redirect URL</th>
+        <th>Total Clicks</th>
+      </tr>
+      <% urls.forEach(url => { %>
+      <tr>
+        <td><%= url.shortId %></td>
+        <td>
+          <a href="<%= url.redirectURL %>" target="_blank">
+            <%= url.redirectURL.replace(/^https?:\/\/(www\.)?/,
+            '').replace(/\.com$/, '') %>
+          </a>
+        </td>
+        <!-- <td><%= url.visitHistory.length %></td> -->
+      </tr>
+      <!-- <% }) %> -->
+    </table> -->

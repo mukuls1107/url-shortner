@@ -10,17 +10,17 @@ async function handleAllUrlData(req, res) {
 async function handleAnalytics(req, res) {
     const id = req.params.id;
 
-    
-    const data = await url.findOne({shortId: id});
-    if (!data) return res.status(404).json({msg: "Id not found."})
 
-    return res.status(200).json({numOfClicks: data.visitHistory.length, id: data.shortid, url: data.redirectURL});
+    const data = await url.findOne({ shortId: id });
+    if (!data) return res.status(404).json({ msg: "Id not found." })
+
+    return res.status(200).json({ numOfClicks: data.visitHistory.length, id: data.shortid, url: data.redirectURL });
 
 }
 
 async function handleRedirectShortIdToUrl(req, res) {
     const id = req.params.id;
-    const getData = await url.findOneAndUpdate({shortId: id},  // Ensure consistent field name
+    const getData = await url.findOneAndUpdate({ shortId: id },  // Ensure consistent field name
         {
             $push: {
                 visitHistory: {
@@ -28,7 +28,7 @@ async function handleRedirectShortIdToUrl(req, res) {
                 }
             }
         });
-    if (!getData) return res.status(404).json({msg: "Id not found"});
+    if (!getData) return res.status(404).json({ msg: "Id not found" });
     res.redirect(getData.redirectURL);
 
 
@@ -36,17 +36,20 @@ async function handleRedirectShortIdToUrl(req, res) {
 
 
 async function handleGenerateNewUrl(req, res) {
-
+    console.log("Called generateNewUrl")
     const body = req.body;
-    if (!body.url) return res.status(400).send({msg: "No Url Provided to short."})
+    if (!body.url) return res.status(400).send({ msg: "No Url Provided to short." })
 
     const shortId = shortid.generate();
     await URL.create({
         shortId: shortId, redirectURL: body.url, visitHistory: []
 
     })
-
-    return res.status(200).send({msg: `URL created with id: ${shortId}`})
+    return res.render("home", {
+        msg: `URL Generated`,
+        id: shortId
+    })
+    // return res.status(200).send({ msg: `URL created with id: ${shortId}` })
 }
 
 
