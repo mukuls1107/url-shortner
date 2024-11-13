@@ -15,9 +15,9 @@ app.set("views", path.resolve("./views"))
 const urlRoute = require("./routes/url")
 const staticRoute = require("./routes/staticRoute")
 
-app.use("/url/", urlRoute)
+app.use("/url", urlRoute)
 
-app.use("/urls", staticRoute)
+app.use("/", staticRoute)
 
 
 // Connection
